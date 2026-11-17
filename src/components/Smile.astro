@@ -1,0 +1,30 @@
+---
+/**
+ * Smile-shaped section edge, echoing the curve in the logo.
+ * Sits at the bottom of a section and is filled with the next section's colour,
+ * so the section above appears to end in a smile.
+ */
+interface Props {
+  /** CSS colour of the section that follows. */
+  fill: string;
+  /** Optional CSS colour for a hand-drawn line along the curve. */
+  stroke?: string;
+}
+const { fill, stroke } = Astro.props;
+---
+
+<svg class="smile-edge" viewBox="0 0 1440 140" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+  <path d="M0 0C330 150 1090 158 1440 4V141H0Z" fill={fill}></path>
+  {
+    stroke && (
+      <path
+        d="M-10 0C330 150 1090 158 1450 4"
+        fill="none"
+        stroke={stroke}
+        stroke-width="10"
+        stroke-linecap="round"
+        vector-effect="non-scaling-stroke"
+      />
+    )
+  }
+</svg>

@@ -1,0 +1,65 @@
+---
+/** Small hand-drawn decorative marks. Always decorative, so hidden from assistive tech. */
+interface Props {
+  name: 'smile' | 'spark' | 'heart' | 'squiggle' | 'arrow';
+  class?: string;
+}
+const { name, class: className } = Astro.props;
+---
+
+{
+  name === 'smile' && (
+    <svg class:list={['doodle', className]} viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+      <circle cx="50" cy="50" r="44" fill="var(--doodle-fill, none)" stroke="currentColor" stroke-width="7" />
+      <path d="M34 40q1 6 0 11M66 39q1 6 0 11" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" />
+      <path d="M28 60q22 22 45-1" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" />
+    </svg>
+  )
+}
+{
+  name === 'spark' && (
+    <svg class:list={['doodle', className]} viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+      <path
+        d="M50 8c3 24 10 33 42 41-31 6-39 16-43 43-4-27-11-36-41-42 29-7 38-17 42-42z"
+        fill="currentColor"
+        stroke="currentColor"
+        stroke-width="5"
+        stroke-linejoin="round"
+      />
+    </svg>
+  )
+}
+{
+  name === 'heart' && (
+    <svg class:list={['doodle', className]} viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+      <path
+        d="M50 86C22 66 9 49 13 31c4-17 26-20 37-3 10-18 33-15 37 2 4 19-10 36-37 56z"
+        fill="currentColor"
+        stroke="currentColor"
+        stroke-width="6"
+        stroke-linejoin="round"
+      />
+    </svg>
+  )
+}
+{
+  name === 'squiggle' && (
+    <svg class:list={['doodle', className]} viewBox="0 0 160 30" aria-hidden="true" focusable="false">
+      <path
+        d="M5 17c12-14 22-14 33 0s22 13 33-1 21-13 32 1 22 14 33 0 14-9 19-6"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="6"
+        stroke-linecap="round"
+      />
+    </svg>
+  )
+}
+{
+  name === 'arrow' && (
+    <svg class:list={['doodle', className]} viewBox="0 0 80 80" aria-hidden="true" focusable="false">
+      <path d="M66 72C40 70 20 52 22 14" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+      <path d="M8 30 22 12l16 15" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  )
+}

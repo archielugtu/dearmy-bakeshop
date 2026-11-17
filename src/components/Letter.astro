@@ -1,0 +1,29 @@
+---
+import { blank, business, copy, photos } from '../data/site';
+import Photo from './Photo.astro';
+import Doodle from './Doodle.astro';
+import Smile from './Smile.astro';
+---
+
+<section class="letter" aria-labelledby="letter-title">
+  <div class="letter__inner">
+    <div class="letter__sheet" data-reveal>
+      <h2 class="letter__salutation" id="letter-title">
+        Dear my <span class="dear-word" data-dear>{blank.fallback}</span>,
+      </h2>
+      {copy.letter.paragraphs.map((p) => <p>{p}</p>)}
+      <p class="letter__signoff">
+        {copy.letter.signOff}
+        <span class="letter__name">{business.name}</span>
+        <Doodle name="smile" />
+      </p>
+    </div>
+
+    <figure class="letter__photo" data-reveal>
+      <span class="tape tape--left" aria-hidden="true"></span>
+      <span class="tape tape--right" aria-hidden="true"></span>
+      <Photo photo={photos.letter} ratio={4 / 5} sizes="(min-width: 900px) 28vw, 70vw" />
+    </figure>
+  </div>
+  <Smile fill="var(--purple)" />
+</section>

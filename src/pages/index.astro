@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Letter from '../components/Letter.astro';
+import Bakes from '../components/Bakes.astro';
+import Visit from '../components/Visit.astro';
+import Order from '../components/Order.astro';
+import Footer from '../components/Footer.astro';
+import { blank } from '../data/site';
+---
+
+<Base>
+  <Header />
+  <main id="main" data-fallback={blank.fallback}>
+    <Hero />
+    <Letter />
+    <Bakes />
+    <Visit />
+    <Order />
+  </main>
+  <Footer />
+
+  <a class="letter-chip" href="#order" id="letter-chip" hidden>
+    <span id="letter-chip-count">0</span> in your letter. Write back
+  </a>
+
+  <script>
+    import '../scripts/main.js';
+  </script>
+</Base>

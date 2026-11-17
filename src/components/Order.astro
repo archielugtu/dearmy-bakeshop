@@ -1,0 +1,66 @@
+---
+import { blank, business, copy, showPlaceholderNotes } from '../data/site';
+import Doodle from './Doodle.astro';
+import Smile from './Smile.astro';
+const ig = business.instagram;
+---
+
+<section class="order" id="order" aria-labelledby="order-title">
+  <div class="order__inner">
+    <div class="order__head">
+      <h2 class="order__title" id="order-title">{copy.order.heading}</h2>
+      <p class="order__intro">{copy.order.intro}</p>
+    </div>
+
+    <div class="note" data-reveal>
+      <p class="note__text">
+        Hi DearMy! I'd love to order something for dear my{' '}<span class="dear-word" data-dear>{blank.fallback}</span>.
+      </p>
+      <p class="note__list-label" id="picks-label" hidden>I've got my eye on:</p>
+      <ul class="note__picks" id="order-picks" aria-labelledby="picks-label" role="list"></ul>
+      <p class="note__empty" id="order-empty">{copy.order.emptyPicks}</p>
+      <div class="note__actions">
+        <button class="btn btn--plum" type="button" id="copy-note" data-label={copy.order.copyCta} data-done={copy.order.copiedLabel}>
+          {copy.order.copyCta}
+        </button>
+        <p class="note__status" id="copy-status" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="ways">
+      <p class="ways__lead">Then send it our way</p>
+      <a class="way way--ig" href={ig.url} target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true" focusable="false">
+          <rect x="3" y="3" width="18" height="18" rx="5.5" fill="none" stroke="currentColor" stroke-width="2.2" />
+          <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2.2" />
+          <circle cx="17.3" cy="6.7" r="1.3" fill="currentColor" />
+        </svg>
+        <span class="way__text">
+          <span class="way__label">{copy.order.instagramCta}</span>
+          <span class="way__detail">
+            {ig.isPlaceholder ? (showPlaceholderNotes ? copy.order.instagramSampleNote : 'Send us a DM') : ig.handle}
+            <span class="sr-only"> (opens in a new tab)</span>
+          </span>
+        </span>
+      </a>
+      <a class="way way--call" href={`tel:${business.phone.tel}`}>
+        <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true" focusable="false">
+          <path
+            d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v3a3 3 0 0 1-3 3A16 16 0 0 1 3 6a3 3 0 0 1 3-3z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="way__text">
+          <span class="way__label">Call us</span>
+          <span class="way__detail">{business.phone.display}</span>
+        </span>
+      </a>
+      <Doodle name="squiggle" class="ways__squiggle" />
+    </div>
+  </div>
+  <Smile fill="var(--plum)" stroke="var(--purple)" />
+</section>

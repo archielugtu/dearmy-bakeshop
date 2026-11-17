@@ -1,0 +1,69 @@
+---
+import { categories, copy, formatPrice, showPlaceholderNotes } from '../data/site';
+import { bakes, menuFromSheet } from '../data/sheet';
+import Photo from './Photo.astro';
+import Doodle from './Doodle.astro';
+---
+
+<section class="bakes" id="bakes" aria-labelledby="bakes-title">
+  <div class="bakes__inner">
+    <div class="bakes__head">
+      <h2 class="bakes__title" id="bakes-title">{copy.bakes.heading}</h2>
+      <p class="bakes__intro">{copy.bakes.intro}</p>
+      {showPlaceholderNotes && !menuFromSheet && <p class="sample-note sample-note--on-purple">{copy.bakes.sampleNote}</p>}
+    </div>
+    <Doodle name="smile" class="bakes__smile" />
+
+    <div class="filters" role="group" aria-label="Filter bakes by type">
+      <button class="chip" type="button" data-filter="all" aria-pressed="true">Everything</button>
+      {
+        categories.map((c) => (
+          <button class="chip" type="button" data-filter={c.id} aria-pressed="false">
+            {c.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <ul class="bakes__grid" role="list">
+      {
+        bakes.map((b, i) => (
+          <li class="bake" data-category={b.category} data-reveal style={`--n:${i % 4}`}>
+            <article class="stamp bake__stamp">
+              <div class="stamp__paper">
+                <div class="bake__photo">
+                  <Photo photo={b.photo} ratio={1} sizes="(min-width: 1100px) 22vw, (min-width: 700px) 30vw, 44vw" />
+                  <p class="bake__price">
+                    <span class="sr-only">Price: </span>
+                    {formatPrice(b.price)}
+                  </p>
+                </div>
+                <h3 class="bake__name">{b.name}</h3>
+                <p class="bake__for">for dear my {b.dearTo}</p>
+                <p class="bake__desc">{b.description}</p>
+                <button class="pick" type="button" data-pick={b.id} data-name={b.name} aria-pressed="false">
+                  <span class="pick__off">Pop it in</span>
+                  <span class="pick__on">
+                    <Doodle name="heart" />
+                    In your letter
+                  </span>
+                  <span class="sr-only">: {b.name}</span>
+                </button>
+              </div>
+            </article>
+          </li>
+        ))
+      }
+      <li class="bake bake--ask" data-reveal style="--n:3">
+        <div class="stamp bake__stamp">
+          <div class="stamp__paper">
+            <p class="bake__ask-text">{copy.bakes.askHeading}</p>
+            <p class="bake__desc">{copy.bakes.askBody}</p>
+            <a class="pick" href="#order">{copy.bakes.askCta}</a>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="perforation" aria-hidden="true"></div>
+</section>

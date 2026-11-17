@@ -1,0 +1,59 @@
+---
+import { business, copy, showPlaceholderNotes } from '../data/site';
+const { address } = business;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__sign">
+      <p class="site-footer__yours">{copy.footer.signOff}</p>
+      <img
+        class="site-footer__logo"
+        src="/logo-384.webp"
+        srcset="/logo-192.webp 192w, /logo-384.webp 384w, /logo-640.webp 640w"
+        sizes="(min-width: 700px) 240px, 180px"
+        width="240"
+        height="240"
+        alt={`${business.name} logo`}
+        loading="lazy"
+      />
+    </div>
+
+    <div class="site-footer__cols">
+      <div>
+        <h2 class="site-footer__h">Find us</h2>
+        <address>
+          {address.street}<br />
+          {address.precinct}<br />
+          {address.city}, {address.country}
+        </address>
+        <a href={business.directionsUrl} target="_blank" rel="noopener">
+          Get directions<span class="sr-only"> on Google Maps (opens in a new tab)</span>
+        </a>
+      </div>
+      <div>
+        <h2 class="site-footer__h">Order and ask</h2>
+        <p>
+          <a href={`tel:${business.phone.tel}`}>{business.phone.display}</a><br />
+          <a href={business.instagram.url} target="_blank" rel="noopener">
+            Instagram message<span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </p>
+      </div>
+      <nav aria-label="Footer">
+        <h2 class="site-footer__h">On this page</h2>
+        <ul role="list">
+          <li><a href="#bakes">Bakes</a></li>
+          <li><a href="#visit">Visit</a></li>
+          <li><a href="#order">Order</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <p class="site-footer__small">
+      © {year} {business.name}.
+      {showPlaceholderNotes && <span> {copy.footer.photoNote}</span>}
+    </p>
+  </div>
+</footer>

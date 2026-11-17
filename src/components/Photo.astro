@@ -1,0 +1,59 @@
+---
+/**
+ * Responsive photo. Accepts an Unsplash photo id (resized and compressed by
+ * Unsplash's image CDN), a local file path from /public, or a public image URL
+ * (from the Google Sheet) which is downloaded, cropped and compressed at build time.
+ */
+import { getImage } from 'astro:assets';
+import type { Photo } from '../data/site';
+
+interface Props {
+  photo: Photo;
+  /** Width / height, e.g. 4/5. Used to crop photos and reserve layout space. */
+  ratio?: number;
+  /** CSS sizes attribute describing the rendered width. */
+  sizes?: string;
+  eager?: boolean;
+  class?: string;
+}
+
+const { photo, ratio = 1, sizes = '(min-width: 900px) 25vw, 50vw', eager = false, class: className } = Astro.props;
+
+const widths = [240, 360, 480, 720, 960];
+const base = photo.unsplashId ? `https://images.unsplash.com/photo-${photo.unsplashId}` : null;
+const url = (w: number) =>
+  `${base}?auto=format&fit=crop&crop=entropy&q=70&w=${w}&h=${Math.round(w / ratio)}`;
+
+let src = base ? url(480) : photo.src;
+let srcset = base ? widths.map((w) => `${url(w)} ${w}w`).join(', ') : undefined;
+
+if (photo.url) {
+  const variants = await Promise.all(
+    widths.map((w) =>
+      getImage({
+        src: photo.url!,
+        width: w,
+        height: Math.round(w / ratio),
+        fit: 'cover',
+        format: 'webp',
+        quality: 70,
+      }),
+    ),
+  );
+  src = variants[2].src;
+  srcset = variants.map((v, i) => `${v.src} ${widths[i]}w`).join(', ');
+}
+---
+
+<img
+  class={className}
+  src={src}
+  srcset={srcset}
+  sizes={srcset ? sizes : undefined}
+  alt={photo.alt}
+  width="480"
+  height={Math.round(480 / ratio)}
+  loading={eager ? 'eager' : 'lazy'}
+  decoding={eager ? 'auto' : 'async'}
+  fetchpriority={eager ? 'high' : undefined}
+/>

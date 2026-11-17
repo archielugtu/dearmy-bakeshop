@@ -1,0 +1,22 @@
+---
+/** Decorative postmark carrying the confirmed street address. */
+import { business } from '../data/site';
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+const ring = `${business.address.precinct} ✦ ${business.address.city} ✦ `.toUpperCase();
+---
+
+<svg class:list={['postmark', className]} viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+  <defs>
+    <path id="postmark-ring" d="M100 100m-74 0a74 74 0 1 1 148 0a74 74 0 1 1-148 0" />
+  </defs>
+  <circle cx="100" cy="100" r="94" fill="none" stroke="currentColor" stroke-width="4" />
+  <circle cx="100" cy="100" r="56" fill="none" stroke="currentColor" stroke-width="3" />
+  <text class="postmark__ring" textLength="455" lengthAdjust="spacing">
+    <textPath href="#postmark-ring">{ring}</textPath>
+  </text>
+  <text class="postmark__num" x="100" y="98" text-anchor="middle">181</text>
+  <text class="postmark__street" x="100" y="122" text-anchor="middle">MADRAS ST</text>
+</svg>

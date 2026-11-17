@@ -1,0 +1,1738 @@
+/* ==========================================================================
+   DearMy Bakeshop
+   Concept: the whole page is a letter. Paper, stamps, postmarks, a blank to fill in.
+   ========================================================================== */
+
+:root {
+  /* Brand colours, taken from the logo */
+  --butter: #fef189;
+  --purple: #915fa4;
+  /* Supporting palette */
+  --cream: #fff9e8;
+  --lilac: #dcc7e8;
+  --pink: #f4b8c5;
+  --plum: #49334f;
+  /* Darker purple for small text on butter, where brand purple falls short of 4.5:1 */
+  --purple-deep: #74468a;
+  --butter-line: #f1df62;
+
+  --font-display: 'Grandstander Variable', 'Trebuchet MS', 'Arial Rounded MT Bold', sans-serif;
+  --font-hand: 'Gaegu', 'Comic Sans MS', cursive;
+  --font-body: 'Figtree Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --gutter: clamp(1.1rem, 4.5vw, 4rem);
+  --max: 82rem;
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-hard: 0 0.35rem 0 rgb(73 51 79 / 0.16);
+  --header-h: 5rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--butter);
+  color: var(--plum);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+dl,
+dd,
+figure,
+address {
+  margin: 0;
+  padding: 0;
+}
+
+address {
+  font-style: normal;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--plum);
+  outline-offset: 3px;
+  border-radius: 0.4rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -5rem;
+  z-index: 100;
+  padding: 0.7rem 1.1rem;
+  background: var(--plum);
+  color: var(--cream);
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Subtle paper grain. Static and tiled, so it costs nothing while scrolling. */
+.paper {
+  position: relative;
+  isolation: isolate;
+}
+
+.paper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .2 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.doodle {
+  width: 1em;
+  height: 1em;
+  flex: none;
+}
+
+.dear-word {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.sample-note {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--purple-deep);
+}
+
+.sample-note::before {
+  content: '';
+  display: inline-block;
+  width: 0.55em;
+  height: 0.55em;
+  margin-right: 0.45em;
+  border-radius: 50%;
+  background: var(--pink);
+  box-shadow: 0 0 0 2px var(--plum);
+}
+
+.sample-note--on-purple {
+  color: var(--cream);
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: 3.25rem;
+  padding: 0.7rem 1.6rem 0.6rem;
+  border: 3px solid var(--purple);
+  border-radius: 999px;
+  background: var(--purple);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 0.3rem 0 var(--plum);
+  transition:
+    transform 0.25s var(--ease-bounce),
+    box-shadow 0.25s var(--ease-bounce);
+}
+
+.btn:hover {
+  transform: translateY(-0.15rem) rotate(-1.5deg);
+  box-shadow: 0 0.45rem 0 var(--plum);
+}
+
+.btn:active {
+  transform: translateY(0.25rem) scale(0.97);
+  box-shadow: 0 0.05rem 0 var(--plum);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--plum);
+  border-color: var(--plum);
+}
+
+.btn--plum {
+  background: var(--plum);
+  border-color: var(--plum);
+  color: var(--cream);
+  box-shadow: 0 0.3rem 0 var(--purple);
+}
+
+.btn--plum:hover {
+  box-shadow: 0 0.45rem 0 var(--purple);
+}
+
+.btn--plum:active {
+  box-shadow: 0 0.05rem 0 var(--purple);
+}
+
+.btn--small {
+  min-height: 2.75rem;
+  padding: 0.45rem 1.1rem 0.35rem;
+  font-size: 1rem;
+  box-shadow: 0 0.2rem 0 var(--plum);
+}
+
+/* --------------------------------------------------------------------------
+   Stamp: cream paper with a perforated edge
+   -------------------------------------------------------------------------- */
+
+.stamp {
+  --perf: 0.9rem;
+  filter: drop-shadow(0 0.3rem 0 rgb(73 51 79 / 0.2));
+}
+
+.stamp__paper {
+  padding: calc(var(--perf) * 0.85);
+  background: var(--cream);
+  -webkit-mask:
+    linear-gradient(#000 0 0) center / calc(100% - var(--perf)) calc(100% - var(--perf)) no-repeat,
+    radial-gradient(circle, #0000 calc(var(--perf) * 0.27), #000 calc(var(--perf) * 0.27 + 0.6px))
+      calc(var(--perf) / -2) calc(var(--perf) / -2) / var(--perf) var(--perf) round;
+  mask:
+    linear-gradient(#000 0 0) center / calc(100% - var(--perf)) calc(100% - var(--perf)) no-repeat,
+    radial-gradient(circle, #0000 calc(var(--perf) * 0.27), #000 calc(var(--perf) * 0.27 + 0.6px))
+      calc(var(--perf) / -2) calc(var(--perf) / -2) / var(--perf) var(--perf) round;
+}
+
+.stamp__paper img {
+  width: 100%;
+  object-fit: cover;
+  background: var(--lilac);
+}
+
+.tape {
+  position: absolute;
+  z-index: 2;
+  width: 6.5rem;
+  height: 1.9rem;
+  background: rgb(244 184 197 / 0.85);
+  clip-path: polygon(0 12%, 4% 0, 8% 14%, 12% 0, 16% 12%, 100% 0, 96% 100%, 92% 86%, 88% 100%, 84% 88%, 0 100%);
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 2vw, 2rem);
+  height: var(--header-h);
+  padding: 0 var(--gutter);
+  background: var(--butter);
+  border-bottom: 3px solid transparent;
+  transition: border-color 0.3s;
+}
+
+.site-header.is-stuck {
+  border-bottom-color: var(--purple);
+}
+
+.site-header__logo {
+  flex: none;
+  display: block;
+  border-radius: 50%;
+  transition: transform 0.4s var(--ease-bounce);
+}
+
+.site-header__logo:hover {
+  transform: rotate(-8deg) scale(1.06);
+}
+
+.site-header__logo img {
+  width: 3.75rem;
+  height: 3.75rem;
+}
+
+.site-header__nav {
+  margin-left: auto;
+}
+
+.site-header__nav ul {
+  display: flex;
+  gap: clamp(0.1rem, 1.5vw, 1.25rem);
+  list-style: none;
+}
+
+.site-header__nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--plum);
+  text-decoration: none;
+  background: linear-gradient(var(--purple), var(--purple)) 50% 85% / 0 3px no-repeat;
+  transition: background-size 0.3s var(--ease-out);
+}
+
+.site-header__nav a:hover {
+  background-size: calc(100% - 1.2rem) 3px;
+}
+
+.site-header__call-number {
+  display: none;
+}
+
+@media (min-width: 700px) {
+  :root {
+    --header-h: 6.25rem;
+  }
+
+  .site-header__logo img {
+    width: 5.25rem;
+    height: 5.25rem;
+  }
+
+  .site-header__call-word {
+    display: none;
+  }
+
+  .site-header__call-number {
+    display: inline;
+  }
+}
+
+/* Smallest phones: tighten the header so logo, three links and the call button all fit */
+@media (max-width: 380px) {
+  .site-header {
+    padding-inline: 0.8rem;
+  }
+
+  .site-header__logo img {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .site-header__nav a {
+    padding: 0 0.3rem;
+    font-size: 0.98rem;
+  }
+
+  .site-header__call-word {
+    display: none;
+  }
+
+  .site-header__call {
+    padding-inline: 0.8rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  padding: clamp(1rem, 3vw, 2.5rem) var(--gutter) clamp(6rem, 13vw, 11rem);
+  background-color: var(--butter);
+  /* Ruled writing paper */
+  background-image: linear-gradient(transparent calc(100% - 2px), var(--butter-line) 0);
+  background-size: 100% clamp(2.4rem, 4.4vw, 3.6rem);
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 2;
+  max-width: var(--max);
+  margin-inline: auto;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  color: var(--purple);
+  line-height: 0.82;
+}
+
+.hero__pre {
+  display: inline-block;
+  font-size: clamp(1.9rem, 4.2vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1;
+  transform: rotate(-3deg);
+  transform-origin: left bottom;
+  margin: 0 0 0.12em 0.1em;
+}
+
+.hero__dear {
+  display: flex;
+  align-items: flex-end;
+  font-size: 24vw;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  margin-left: -0.04em;
+}
+
+.hero__gap {
+  width: 0.22em;
+}
+
+/* Each letter sits a little off, like the hand-cut lettering in the logo */
+.hero__ch {
+  display: inline-block;
+  transform: translateY(var(--y, 0)) rotate(var(--r, 0deg));
+}
+
+.hero__ch:nth-child(1) { --r: -4deg; --y: 0.02em; }
+.hero__ch:nth-child(2) { --r: 3deg; --y: -0.03em; font-size: 0.86em; }
+.hero__ch:nth-child(3) { --r: -2deg; --y: 0.01em; font-size: 0.9em; }
+.hero__ch:nth-child(4) { --r: 4deg; --y: -0.02em; font-size: 0.86em; }
+.hero__ch:nth-child(6) { --r: -3deg; --y: 0.03em; }
+.hero__ch:nth-child(7) { --r: 5deg; --y: -0.01em; font-size: 0.88em; }
+
+.blank {
+  position: relative;
+  display: block;
+  width: min(100%, 6em);
+  margin-top: 0.02em;
+  font-family: var(--font-hand);
+  font-size: clamp(3rem, 15vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1;
+  transform: rotate(-1.5deg);
+  transform-origin: left center;
+}
+
+.blank__input {
+  display: block;
+  width: 100%;
+  height: 1.15em;
+  padding: 0 0.12em;
+  border: 0;
+  border-bottom: 0.07em dashed var(--purple);
+  border-radius: 0.12em 0.12em 0 0;
+  background: transparent;
+  color: var(--plum);
+  caret-color: var(--purple);
+  transition: background-color 0.2s;
+}
+
+.blank__input:hover {
+  background: rgb(255 249 232 / 0.55);
+}
+
+.blank__input:focus {
+  outline: none;
+  background: var(--cream);
+  border-bottom-style: solid;
+  border-bottom-color: var(--plum);
+}
+
+.blank__ghost {
+  position: absolute;
+  left: 0.12em;
+  bottom: 0.12em;
+  max-width: 100%;
+  white-space: nowrap;
+  color: var(--purple-deep);
+  pointer-events: none;
+  transform-origin: left bottom;
+}
+
+/* The cycling word steps aside as soon as the visitor focuses or fills the blank.
+   :placeholder-shown keeps this working even if the script never loads. */
+.blank.is-filled .blank__ghost,
+.blank__input:not(:placeholder-shown) + .blank__ghost,
+.blank__input:focus + .blank__ghost {
+  visibility: hidden;
+}
+
+.blank__ghost.is-swapping {
+  animation: word-in 0.55s var(--ease-bounce) both;
+}
+
+@keyframes word-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em) rotate(4deg) scale(0.9);
+  }
+}
+
+.hero__hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  font-family: var(--font-hand);
+  font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--purple-deep);
+}
+
+.hero__hint .doodle {
+  width: 1.6em;
+  height: 1.6em;
+  margin-top: -0.35em;
+}
+
+.hero__intro {
+  max-width: 31rem;
+  margin-top: clamp(1.1rem, 2vw, 1.6rem);
+  font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 1rem;
+  margin-top: 1.25rem;
+}
+
+/* Photo stamps */
+.hero__stamps {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 3rem auto 0;
+  max-width: 30rem;
+}
+
+.hero__stamp {
+  --perf: 0.7rem;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.hero__stamp--a { transform: rotate(-7deg) translateX(8%); z-index: 1; }
+.hero__stamp--b { transform: rotate(3deg) translateY(-8%); z-index: 2; flex-grow: 1.1; }
+.hero__stamp--c { transform: rotate(9deg) translateX(-10%); z-index: 1; }
+
+.postmark {
+  color: var(--purple);
+  font-family: var(--font-display);
+}
+
+.postmark__ring {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  fill: currentColor;
+}
+
+.postmark__num {
+  font-size: 34px;
+  font-weight: 900;
+  fill: currentColor;
+}
+
+.postmark__street {
+  font-size: 15px;
+  font-weight: 800;
+  fill: currentColor;
+}
+
+.hero__postmark {
+  position: absolute;
+  right: -3%;
+  bottom: -28%;
+  z-index: 3;
+  width: 34%;
+  transform: rotate(-14deg);
+  mix-blend-mode: multiply;
+}
+
+.hero__spark,
+.hero__heart {
+  position: absolute;
+  z-index: 1;
+  color: var(--pink);
+}
+
+.hero__spark--1 { width: clamp(1.6rem, 3.5vw, 3rem); height: auto; right: 7%; top: 2rem; color: var(--purple); }
+.hero__spark--2 { width: clamp(1.1rem, 2vw, 1.8rem); height: auto; right: 16%; top: 5.5rem; }
+.hero__heart { width: clamp(1.6rem, 3vw, 2.6rem); height: auto; left: 46%; bottom: clamp(5rem, 11vw, 9rem); transform: rotate(14deg); display: none; }
+
+@media (min-width: 700px) {
+  .hero__dear {
+    font-size: clamp(8rem, 18vw, 16.5rem);
+  }
+
+  .blank {
+    font-size: clamp(5rem, 9vw, 7.5rem);
+  }
+}
+
+@media (min-width: 900px) {
+  .hero {
+    min-height: min(56rem, calc(100svh - var(--header-h) + 4rem));
+  }
+
+  .hero__stamps {
+    position: absolute;
+    inset: 0;
+    display: block;
+    max-width: none;
+    margin: 0;
+    pointer-events: none;
+  }
+
+  .hero__stamp {
+    position: absolute;
+    --perf: 0.95rem;
+  }
+
+  .hero__stamp--a {
+    width: clamp(11rem, 17vw, 16rem);
+    right: 21%;
+    top: -1.5rem;
+    transform: rotate(7deg);
+  }
+
+  .hero__stamp--b {
+    width: clamp(12rem, 19vw, 18rem);
+    right: 4%;
+    top: 42%;
+    transform: rotate(-5deg);
+  }
+
+  .hero__stamp--c {
+    width: clamp(9rem, 13.5vw, 13rem);
+    right: 25%;
+    top: auto;
+    bottom: clamp(3rem, 7vw, 6rem);
+    transform: rotate(-11deg);
+  }
+
+  .hero__postmark {
+    width: clamp(8rem, 12vw, 11rem);
+    right: 15%;
+    top: 36%;
+    bottom: auto;
+  }
+
+  .hero__heart {
+    display: block;
+  }
+}
+
+/* One orchestrated entrance, on load only */
+@media (prefers-reduced-motion: no-preference) {
+  .js .hero__pre {
+    animation: pre-in 0.6s var(--ease-bounce) both;
+  }
+
+  .js .hero__ch {
+    animation: ch-in 0.7s var(--ease-bounce) both;
+    animation-delay: calc(0.12s + var(--i) * 0.06s);
+  }
+
+  .js .blank {
+    animation: blank-in 0.7s var(--ease-out) 0.65s both;
+  }
+
+  .js .hero__hint,
+  .js .hero__intro,
+  .js .hero__ctas {
+    animation: fade-up 0.6s var(--ease-out) 0.9s both;
+  }
+
+  .js .hero__stamp {
+    animation: thunk 0.55s var(--ease-bounce) both;
+  }
+
+  .js .hero__stamp--a { animation-delay: 0.75s; }
+  .js .hero__stamp--b { animation-delay: 0.9s; }
+  .js .hero__stamp--c { animation-delay: 1.05s; }
+
+  .js .hero__postmark {
+    animation: postmark-in 0.4s var(--ease-bounce) 1.3s both;
+  }
+
+  .hero__spark {
+    animation: twinkle 3.2s ease-in-out infinite;
+  }
+
+  .hero__spark--2 {
+    animation-delay: 1.1s;
+  }
+}
+
+@keyframes pre-in {
+  from { opacity: 0; transform: rotate(-9deg) translateY(0.5em); }
+}
+
+@keyframes ch-in {
+  from { opacity: 0; transform: translateY(0.35em) rotate(calc(var(--r, 0deg) * -3)) scale(0.7); }
+}
+
+@keyframes blank-in {
+  from { opacity: 0; clip-path: inset(0 100% 0 0); }
+  to { opacity: 1; clip-path: inset(-20% -5% -20% -5%); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; translate: 0 1rem; }
+}
+
+@keyframes thunk {
+  from { opacity: 0; scale: 1.5; }
+  60% { opacity: 1; }
+}
+
+@keyframes postmark-in {
+  from { opacity: 0; scale: 1.6; }
+}
+
+@keyframes twinkle {
+  50% { scale: 0.7; rotate: 20deg; }
+}
+
+/* --------------------------------------------------------------------------
+   Smile edges and reveal
+   -------------------------------------------------------------------------- */
+
+.smile-edge {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  z-index: 1;
+  width: 100%;
+  height: clamp(2.75rem, 8vw, 7.5rem);
+  pointer-events: none;
+  overflow: visible;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    translate: 0 1.5rem;
+    scale: 0.96;
+    transition:
+      opacity 0.5s var(--ease-out),
+      translate 0.7s var(--ease-bounce),
+      scale 0.7s var(--ease-bounce);
+    transition-delay: calc(var(--n, 0) * 70ms);
+  }
+
+  .js [data-reveal].is-in {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   The letter (brand story)
+   -------------------------------------------------------------------------- */
+
+.letter {
+  position: relative;
+  padding: 0 var(--gutter) clamp(6rem, 14vw, 12rem);
+  background: var(--cream);
+}
+
+.letter__inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 2.5rem;
+  max-width: 68rem;
+  margin-inline: auto;
+}
+
+.letter__sheet {
+  position: relative;
+  margin-top: clamp(-5rem, -7vw, -3rem);
+  padding: clamp(1.75rem, 4.5vw, 3.75rem);
+  background: #fff;
+  border-radius: 0.3rem 1.4rem 0.4rem 1.6rem;
+  box-shadow:
+    0 0 0 3px var(--plum),
+    0.5rem 0.6rem 0 var(--purple);
+  rotate: -1.2deg;
+  font-size: clamp(1.1rem, 1.45vw, 1.3rem);
+  line-height: 1.55;
+}
+
+.letter__salutation {
+  margin-bottom: 0.6em;
+  font-family: var(--font-hand);
+  font-size: clamp(2.3rem, 5.2vw, 4rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--purple);
+}
+
+.letter__sheet p + p {
+  margin-top: 0.9em;
+}
+
+.letter__sheet p {
+  max-width: 34rem;
+}
+
+.letter__signoff {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.5rem;
+  margin-top: 1.4em !important;
+  font-family: var(--font-hand);
+  font-size: 1.7em;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--purple);
+}
+
+.letter__name {
+  font-family: var(--font-display);
+  font-size: 0.82em;
+  font-weight: 800;
+}
+
+.letter__signoff .doodle {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.letter__photo {
+  position: relative;
+  justify-self: center;
+  width: min(72%, 19rem);
+  padding: 0.7rem 0.7rem 2.6rem;
+  background: #fff;
+  box-shadow:
+    0 0 0 3px var(--plum),
+    var(--shadow-hard);
+  rotate: 4deg;
+}
+
+.letter__photo img {
+  width: 100%;
+}
+
+.tape--left { left: -2rem; top: -0.7rem; rotate: -32deg; }
+.tape--right { right: -2rem; top: -0.7rem; rotate: 28deg; background: rgb(220 199 232 / 0.9); }
+.tape--top { left: 50%; top: -1rem; translate: -50% 0; rotate: -3deg; }
+
+@media (min-width: 900px) {
+  .letter__inner {
+    grid-template-columns: 1.55fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+
+  .letter__photo {
+    width: 100%;
+    margin-top: 4rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Bakes: a sheet of stamps
+   -------------------------------------------------------------------------- */
+
+.bakes {
+  position: relative;
+  padding: clamp(3rem, 6vw, 5rem) var(--gutter) clamp(5rem, 9vw, 8rem);
+  background: var(--purple);
+  color: var(--cream);
+}
+
+.bakes__inner {
+  position: relative;
+  max-width: var(--max);
+  margin-inline: auto;
+}
+
+.bakes__smile {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .bakes__smile {
+    display: block;
+    position: absolute;
+    right: 3%;
+    top: -1rem;
+    width: clamp(12rem, 22vw, 19rem);
+    height: auto;
+    color: var(--butter);
+    rotate: 12deg;
+  }
+}
+
+.bake--ask .stamp__paper {
+  justify-content: center;
+  padding: 1.6rem 1.4rem;
+  background: var(--lilac);
+}
+
+.bake__ask-text {
+  font-family: var(--font-hand);
+  font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--plum);
+}
+
+.bake--ask .pick {
+  margin-top: 0;
+  text-decoration: none;
+  background: var(--cream);
+}
+
+.bakes__head {
+  max-width: 46rem;
+}
+
+.bakes__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 7.5vw, 6.25rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--butter);
+  text-wrap: balance;
+}
+
+.bakes__intro {
+  max-width: 34rem;
+  margin: 1.2rem 0 0.6rem;
+  font-size: clamp(1.1rem, 1.4vw, 1.25rem);
+  font-weight: 500;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(2rem, 4vw, 3.5rem);
+}
+
+.chip {
+  min-height: 2.75rem;
+  padding: 0.4rem 1.1rem 0.3rem;
+  border: 3px solid var(--cream);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.25s var(--ease-bounce),
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.chip:hover {
+  transform: rotate(-2deg) scale(1.04);
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--butter);
+  border-color: var(--butter);
+  color: var(--plum);
+  transform: rotate(-2deg);
+}
+
+.chip:focus-visible,
+.bakes .pick:focus-visible {
+  outline-color: var(--butter);
+}
+
+.bakes__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.1rem, 3vw, 2.5rem) clamp(0.9rem, 2.4vw, 2.25rem);
+  list-style: none;
+}
+
+.bake[hidden] {
+  display: none;
+}
+
+.bake__stamp {
+  --perf: 0.75rem;
+  height: 100%;
+  color: var(--plum);
+  transition: transform 0.4s var(--ease-bounce);
+}
+
+.bake__stamp .stamp__paper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Hand-placed feel: no two neighbours sit quite straight */
+.bake:nth-child(4n + 1) .bake__stamp { transform: rotate(-1deg); }
+.bake:nth-child(4n + 2) .bake__stamp { transform: rotate(0.8deg) translateY(0.9rem); }
+.bake:nth-child(4n + 3) .bake__stamp { transform: rotate(1.1deg); }
+.bake:nth-child(4n + 4) .bake__stamp { transform: rotate(-0.7deg) translateY(0.9rem); }
+
+@media (min-width: 700px) {
+  .bake:nth-child(4n + 1) .bake__stamp { transform: rotate(-1.6deg); }
+  .bake:nth-child(4n + 2) .bake__stamp { transform: rotate(1.2deg) translateY(0.9rem); }
+  .bake:nth-child(4n + 3) .bake__stamp { transform: rotate(1.8deg); }
+  .bake:nth-child(4n + 4) .bake__stamp { transform: rotate(-1deg) translateY(0.9rem); }
+}
+
+@media (hover: hover) {
+  .bake .bake__stamp:hover {
+    transform: rotate(0deg) translateY(-0.5rem) scale(1.03);
+  }
+
+  .bake__stamp:hover .bake__photo img {
+    scale: 1.07;
+  }
+
+  .bake__stamp:hover .bake__price {
+    rotate: -14deg;
+    scale: 1.1;
+  }
+}
+
+.bake__photo {
+  position: relative;
+}
+
+.bake__photo img {
+  aspect-ratio: 1;
+  transition: scale 0.6s var(--ease-out);
+}
+
+.bake__photo {
+  overflow: hidden;
+}
+
+.bake__price {
+  position: absolute;
+  right: 0.4rem;
+  bottom: 0.4rem;
+  display: grid;
+  place-items: center;
+  min-width: 3.4rem;
+  height: 3.4rem;
+  padding: 0.2rem 0.5rem 0;
+  border-radius: 50%;
+  background: var(--butter);
+  box-shadow: 0 0 0 3px var(--plum);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  rotate: 8deg;
+  transition:
+    rotate 0.4s var(--ease-bounce),
+    scale 0.4s var(--ease-bounce);
+}
+
+.bake__name {
+  margin-top: 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.9vw, 1.6rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--purple-deep);
+}
+
+.bake__for {
+  margin-top: 0.15rem;
+  font-family: var(--font-hand);
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.bake__desc {
+  margin: 0.5rem 0 0.9rem;
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  line-height: 1.45;
+}
+
+.pick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  align-self: flex-start;
+  min-height: 2.75rem;
+  margin-top: auto;
+  padding: 0.4rem 1rem 0.3rem;
+  border: 3px solid var(--plum);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--plum);
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.1;
+  cursor: pointer;
+  transition:
+    transform 0.25s var(--ease-bounce),
+    background-color 0.2s;
+}
+
+.pick:hover {
+  transform: scale(1.05) rotate(-2deg);
+  background: var(--butter);
+}
+
+.pick:active {
+  transform: scale(0.94);
+}
+
+.pick__on {
+  display: none;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pick__on .doodle {
+  color: var(--purple);
+}
+
+.pick[aria-pressed='true'] {
+  background: var(--pink);
+}
+
+.pick[aria-pressed='true'] .pick__off {
+  display: none;
+}
+
+.pick[aria-pressed='true'] .pick__on {
+  display: inline-flex;
+}
+
+.pick.is-popped {
+  animation: pop 0.45s var(--ease-bounce);
+}
+
+@keyframes pop {
+  40% { transform: scale(1.15) rotate(-4deg); }
+}
+
+/* Torn perforated edge into the next section */
+.perforation {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1.1rem;
+  background: radial-gradient(circle at 50% 100%, var(--cream) 0.62rem, #0000 0.66rem) 0 0 / 2rem 100% repeat-x;
+}
+
+@media (min-width: 700px) {
+  .bakes__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .bake__stamp {
+    --perf: 0.95rem;
+  }
+
+  .bake__price {
+    min-width: 4rem;
+    height: 4rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .bakes__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Visit: the envelope
+   -------------------------------------------------------------------------- */
+
+.visit {
+  position: relative;
+  padding: clamp(4rem, 8vw, 7rem) var(--gutter) clamp(7rem, 15vw, 13rem);
+  background-color: var(--cream);
+}
+
+.visit__inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 2.5rem;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+.visit__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 7.5vw, 6.25rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--purple);
+}
+
+.envelope {
+  padding: clamp(0.7rem, 1.4vw, 1.1rem);
+  border-radius: 1.2rem;
+  /* Airmail stripes in brand colours */
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--purple) 0 1.1rem,
+    #fff 1.1rem 2.2rem,
+    var(--pink) 2.2rem 3.3rem,
+    #fff 3.3rem 4.4rem
+  );
+  box-shadow:
+    0 0 0 3px var(--plum),
+    0.5rem 0.6rem 0 var(--lilac);
+  rotate: -1deg;
+}
+
+.envelope__face {
+  position: relative;
+  padding: clamp(1.4rem, 4vw, 3.25rem);
+  border-radius: 0.6rem;
+  background: #fff;
+}
+
+.envelope__corner {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: var(--purple);
+}
+
+.envelope__waves {
+  width: clamp(5rem, 13vw, 9rem);
+  margin-right: -1.2rem;
+  position: relative;
+  z-index: 1;
+  mix-blend-mode: multiply;
+}
+
+.envelope__stamp {
+  --perf: 0.7rem;
+  width: clamp(5.5rem, 13vw, 8.5rem);
+  rotate: 4deg;
+}
+
+.envelope__stamp .stamp__paper {
+  background: var(--butter);
+}
+
+.envelope__stamp img {
+  background: var(--butter);
+}
+
+.envelope__to {
+  font-family: var(--font-hand);
+  font-size: clamp(1.7rem, 3.6vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--purple);
+}
+
+.envelope__label {
+  margin-top: 1.4rem;
+  font-weight: 600;
+}
+
+.envelope__address {
+  display: grid;
+  margin: 0.2rem 0 1.6rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 5.2vw, 4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+}
+
+.envelope__address span:nth-child(n + 2) {
+  font-size: 0.62em;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--purple-deep);
+}
+
+.hours {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 22rem);
+  padding: 2rem 1.6rem 1.5rem;
+  background: var(--butter);
+  box-shadow:
+    0 0 0 3px var(--plum),
+    var(--shadow-hard);
+  rotate: 2.5deg;
+}
+
+.hours__title {
+  font-family: var(--font-hand);
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--purple-deep);
+}
+
+.hours__list {
+  margin: 1rem 0 0.9rem;
+}
+
+.hours__list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 2px dashed rgb(73 51 79 / 0.35);
+}
+
+.hours__list dt {
+  font-weight: 600;
+}
+
+.hours__list dd {
+  font-family: var(--font-display);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (min-width: 900px) {
+  .visit__inner {
+    grid-template-columns: 1.7fr 1fr;
+    align-items: end;
+    gap: 2rem clamp(2rem, 4vw, 4rem);
+  }
+
+  .visit__title {
+    grid-column: 1 / -1;
+  }
+
+  .hours {
+    margin-bottom: 3rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Order: write back
+   -------------------------------------------------------------------------- */
+
+.order {
+  position: relative;
+  padding: clamp(3rem, 6vw, 5rem) var(--gutter) clamp(7rem, 15vw, 13rem);
+  background: var(--butter);
+}
+
+.order__inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 2.5rem;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+.order__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 7.5vw, 6.25rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--purple);
+}
+
+.order__intro {
+  max-width: 34rem;
+  margin-top: 1.2rem;
+  font-size: clamp(1.1rem, 1.4vw, 1.25rem);
+  font-weight: 500;
+}
+
+.note {
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  background: #fff;
+  /* Ruled lines, sitting just under each line of handwriting */
+  background-image: linear-gradient(transparent calc(100% - 2px), var(--lilac) 0);
+  background-size: 100% 2.5rem;
+  background-origin: content-box;
+  background-position: 0 -0.3rem;
+  border-radius: 1.5rem 0.4rem 1.3rem 0.5rem;
+  box-shadow:
+    0 0 0 3px var(--plum),
+    0.5rem 0.6rem 0 var(--purple);
+  rotate: -1deg;
+  font-family: var(--font-hand);
+  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
+  font-weight: 700;
+  line-height: 2.5rem;
+}
+
+.note__picks {
+  list-style: none;
+}
+
+.note__picks li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.note__picks li::before {
+  content: '';
+  flex: none;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: var(--purple);
+}
+
+.note__picks li.is-new {
+  animation: fade-up 0.4s var(--ease-out);
+}
+
+.note__remove {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-left: auto;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--purple-deep);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.note__remove:hover {
+  background: var(--pink);
+  color: var(--plum);
+}
+
+.note__empty {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 2.5rem;
+  color: var(--purple-deep);
+}
+
+@media (max-width: 520px) {
+  .note__empty {
+    line-height: 1.25rem;
+    padding: 0.5rem 0 0.75rem;
+  }
+}
+
+.note__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.note__status {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--purple-deep);
+}
+
+.ways {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.ways__lead {
+  font-family: var(--font-hand);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--purple-deep);
+}
+
+.way {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem;
+  border: 3px solid var(--plum);
+  border-radius: 1.4rem 1.1rem 1.5rem 1rem;
+  background: var(--purple);
+  color: var(--cream);
+  text-decoration: none;
+  box-shadow: 0 0.35rem 0 var(--plum);
+  transition:
+    transform 0.3s var(--ease-bounce),
+    box-shadow 0.3s var(--ease-bounce);
+}
+
+.way:hover {
+  transform: translateY(-0.2rem) rotate(-1deg);
+  box-shadow: 0 0.55rem 0 var(--plum);
+}
+
+.way:active {
+  transform: translateY(0.25rem);
+  box-shadow: 0 0.1rem 0 var(--plum);
+}
+
+.way--call {
+  background: var(--cream);
+  color: var(--plum);
+}
+
+.way__text {
+  display: grid;
+}
+
+.way__label {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.way__detail {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.way--call .way__detail {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--purple-deep);
+}
+
+.ways__squiggle {
+  width: 8rem;
+  height: auto;
+  margin: 0.5rem 0 0 auto;
+  color: var(--purple);
+}
+
+@media (min-width: 900px) {
+  .order__inner {
+    grid-template-columns: 1.45fr 1fr;
+    gap: 2.5rem clamp(2rem, 5vw, 5rem);
+  }
+
+  .order__head {
+    grid-column: 1 / -1;
+  }
+
+  .ways {
+    padding-top: 1rem;
+  }
+}
+
+/* Floating reminder once something is in the letter */
+.letter-chip {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 3rem;
+  padding: 0.6rem 1.2rem 0.5rem;
+  border: 3px solid var(--plum);
+  border-radius: 999px;
+  background: var(--pink);
+  color: var(--plum);
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 0.3rem 0 var(--plum);
+  animation: thunk 0.4s var(--ease-bounce);
+}
+
+.letter-chip[hidden] {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Footer: the sign-off
+   -------------------------------------------------------------------------- */
+
+.site-footer {
+  padding: clamp(1rem, 3vw, 2rem) var(--gutter) 2.5rem;
+  background: var(--plum);
+  color: var(--cream);
+}
+
+.site-footer__inner {
+  display: grid;
+  gap: 2.5rem;
+  max-width: var(--max);
+  margin-inline: auto;
+}
+
+.site-footer__sign {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.site-footer__yours {
+  font-family: var(--font-hand);
+  font-size: clamp(2.6rem, 6vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--butter);
+  rotate: -4deg;
+}
+
+.site-footer__logo {
+  width: clamp(9rem, 22vw, 15rem);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--purple);
+  rotate: 5deg;
+}
+
+.site-footer__cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 2rem;
+}
+
+.site-footer__h {
+  margin-bottom: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--butter);
+}
+
+.site-footer ul {
+  list-style: none;
+}
+
+.site-footer a {
+  display: inline-block;
+  padding: 0.35rem 0;
+  font-weight: 600;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--purple);
+}
+
+.site-footer a:hover {
+  text-decoration-color: var(--butter);
+}
+
+.site-footer :focus-visible {
+  outline-color: var(--butter);
+}
+
+.site-footer__small {
+  max-width: 44rem;
+  font-size: 0.9rem;
+  color: var(--lilac);
+}
+
+@media (min-width: 900px) {
+  .site-footer__inner {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 2rem 5rem;
+  }
+
+  .site-footer__small {
+    grid-column: 1 / -1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion: everything still works, nothing moves
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

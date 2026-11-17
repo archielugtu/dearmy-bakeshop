@@ -1,0 +1,64 @@
+---
+import { blank, business, copy, showPlaceholderNotes } from '../data/site';
+import { hours } from '../data/sheet';
+import Smile from './Smile.astro';
+const { address } = business;
+---
+
+<section class="visit paper" id="visit" aria-labelledby="visit-title">
+  <div class="visit__inner">
+    <h2 class="visit__title" id="visit-title">{copy.visit.heading}</h2>
+
+    <div class="envelope" data-reveal>
+      <div class="envelope__face">
+        <div class="envelope__corner" aria-hidden="true">
+          <svg class="envelope__waves" viewBox="0 0 150 70" focusable="false">
+            <path
+              d="M4 12c12-10 24-10 36 0s24 10 36 0 24-10 36 0 24 10 34 2M4 34c12-10 24-10 36 0s24 10 36 0 24-10 36 0 24 10 34 2M4 56c12-10 24-10 36 0s24 10 36 0 24-10 36 0 24 10 34 2"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="4"
+              stroke-linecap="round"
+            ></path>
+          </svg>
+          <div class="stamp envelope__stamp">
+            <div class="stamp__paper">
+              <img src="/logo-384.webp" srcset="/logo-192.webp 192w, /logo-384.webp 384w" sizes="130px" width="130" height="130" alt="" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        <p class="envelope__to">
+          To: dear my <span class="dear-word" data-dear>{blank.fallback}</span>
+        </p>
+        <p class="envelope__label">You’ll find us at</p>
+        <address class="envelope__address">
+          <span>{address.street}</span>
+          <span>{address.precinct}</span>
+          <span>{address.city}, {address.country}</span>
+        </address>
+        <a class="btn" href={business.directionsUrl} target="_blank" rel="noopener">
+          {copy.visit.directionsCta}
+          <span class="sr-only"> on Google Maps (opens in a new tab)</span>
+        </a>
+      </div>
+    </div>
+
+    <aside class="hours" aria-labelledby="hours-title" data-reveal>
+      <span class="tape tape--top" aria-hidden="true"></span>
+      <h3 class="hours__title" id="hours-title">{copy.visit.hoursHeading}</h3>
+      <dl class="hours__list">
+        {
+          hours.rows.map((r) => (
+            <div>
+              <dt>{r.days}</dt>
+              <dd>{r.time}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      {showPlaceholderNotes && hours.isPlaceholder && <p class="sample-note">{copy.visit.sampleNote}</p>}
+    </aside>
+  </div>
+  <Smile fill="var(--butter)" />
+</section>

@@ -1,0 +1,76 @@
+---
+import { blank, business, copy, photos } from '../data/site';
+import Photo from './Photo.astro';
+import Doodle from './Doodle.astro';
+import Postmark from './Postmark.astro';
+
+const dearLetters = business.taglineDear.toUpperCase().split('');
+---
+
+<section class="hero paper" id="top" aria-labelledby="hero-title">
+  <div class="hero__inner">
+    <h1 class="hero__title" id="hero-title">
+      <span class="hero__pre">{business.taglineLead}</span>
+      <span class="sr-only"> {business.taglineDear}</span>
+      <span class="hero__dear" aria-hidden="true">
+        {
+          dearLetters.map((ch, i) =>
+            ch === ' ' ? <span class="hero__gap" /> : <span class="hero__ch" style={`--i:${i}`}>{ch}</span>
+          )
+        }
+      </span>
+    </h1>
+
+    <div class="blank" data-blank data-words={JSON.stringify(blank.words)}>
+      <label class="sr-only" for="dear-input">Fill in the blank: who are you baking for?</label>
+      <input
+        id="dear-input"
+        class="blank__input"
+        type="text"
+        placeholder=" "
+        maxlength={blank.maxLength}
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        enterkeyhint="done"
+        aria-describedby="dear-hint"
+      />
+      <span class="blank__ghost" aria-hidden="true">{blank.words[0]}</span>
+    </div>
+
+    <p class="hero__hint" id="dear-hint">
+      <Doodle name="arrow" />
+      {copy.hero.hint}
+    </p>
+
+    <p class="hero__intro">{copy.hero.intro}</p>
+
+    <div class="hero__ctas">
+      <a class="btn" href="#bakes">{copy.hero.primaryCta}</a>
+      <a class="btn btn--ghost" href="#visit">{copy.hero.secondaryCta}</a>
+    </div>
+  </div>
+
+  <div class="hero__stamps">
+    <figure class="stamp hero__stamp hero__stamp--a">
+      <div class="stamp__paper">
+        <Photo photo={photos.heroTop} ratio={4 / 5} sizes="(min-width: 900px) 20vw, 34vw" eager />
+      </div>
+    </figure>
+    <figure class="stamp hero__stamp hero__stamp--b">
+      <div class="stamp__paper">
+        <Photo photo={photos.heroMiddle} ratio={1} sizes="(min-width: 900px) 17vw, 30vw" eager />
+      </div>
+    </figure>
+    <figure class="stamp hero__stamp hero__stamp--c">
+      <div class="stamp__paper">
+        <Photo photo={photos.heroBottom} ratio={4 / 5} sizes="(min-width: 900px) 15vw, 28vw" eager />
+      </div>
+    </figure>
+    <Postmark class="hero__postmark" />
+  </div>
+
+  <Doodle name="spark" class="hero__spark hero__spark--1" />
+  <Doodle name="spark" class="hero__spark hero__spark--2" />
+  <Doodle name="heart" class="hero__heart" />
+</section>
