@@ -9,7 +9,7 @@
  *
  * Script properties (Project Settings > Script properties):
  *   API_KEY          any long random string; the site build sends it as ?key=
- *   DEPLOY_HOOK_URL  the host's deploy hook URL (Cloudflare Pages / Netlify / Vercel)
+ *   DEPLOY_HOOK_URL  the host's deploy hook URL (Cloudflare Workers Builds / Netlify / Vercel)
  */
 
 var BAKES_TAB = 'Bakes';

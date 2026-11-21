@@ -58,7 +58,7 @@ SHEET_API_KEY=<same as API_KEY>
 
 ### 4. Deploy hook
 
-- Cloudflare Pages: Settings > Builds & deployments > **Deploy hooks**.
+- Cloudflare Workers (Workers Builds, what the DearMy site uses): Workers & Pages > your Worker > Settings > Builds > **Deploy Hooks**. For a classic Pages project it is Settings > Builds > Add deploy hook.
 - Netlify: Site settings > Build & deploy > **Build hooks**.
 - Vercel: Settings > Git > **Deploy Hooks**.
 
